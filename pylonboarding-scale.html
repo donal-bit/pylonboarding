@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scale Track - Pylonboarding | Pylon</title>
+<meta name="description" content="Your personalized Pylon setup guide: automate triage, enforce SLA compliance, and eliminate manual routing with Teams, Triggers, and Analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090b;--bg-card:#111113;--bg-card-h:#19191d;--bg-s:#0d0d10;
+  --bdr:#222228;--bdr-h:#333340;
+  --t1:#fafafa;--t2:#a1a1aa;--t3:#71717a;
+  --purple:#7c3aed;--p-soft:rgba(124,58,237,.12);
+  --teal:#2dd4bf;--te-soft:rgba(45,212,191,.1);
+  --amber:#f59e0b;--a-soft:rgba(245,158,11,.1);
+  --r:16px;--rs:12px;--mw:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--t1);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--purple);text-decoration:none}a:hover{text-decoration:underline}
+
+html.light{
+  --bg:#fafaf9;--bg-card:#ffffff;--bg-card-h:#f5f5f4;--bg-s:#f0efed;
+  --bdr:#e4e4e7;--bdr-h:#d4d4d8;
+  --t1:#18181b;--t2:#52525b;--t3:#a1a1aa;
+  --purple:#7c3aed;--p-soft:rgba(124,58,237,.08);
+  --teal:#0d9488;--te-soft:rgba(13,148,136,.08);
+  --amber:#d97706;--a-soft:rgba(217,119,6,.08);
+}
+
+.theme-toggle{
+  margin-left:auto;width:36px;height:36px;border-radius:10px;border:1px solid var(--bdr);
+  background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,border-color .15s;color:var(--t2);flex-shrink:0;
+}
+.theme-toggle:hover{background:var(--bg-card-h);border-color:var(--bdr-h)}
+html:not(.light) .theme-toggle .sun{display:none}
+html:not(.light) .theme-toggle .moon{display:block}
+html.light .theme-toggle .sun{display:block}
+html.light .theme-toggle .moon{display:none}
+
+.nav{border-bottom:1px solid var(--bdr);padding:16px 32px;display:flex;align-items:center;gap:12px}
+.nav .logo{font-weight:800;font-size:18px;letter-spacing:-.03em;color:var(--t1)}
+.nav .sep{color:var(--t3)}
+.nav .pg{color:var(--t2);font-size:14px;font-weight:500}
+.nav .pg a{color:var(--t2);text-decoration:none}
+.nav .pg a:hover{color:var(--t1)}
+
+.hero{max-width:var(--mw);margin:0 auto;padding:80px 32px 64px;position:relative}
+.hero::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(245,158,11,.08),transparent 70%);pointer-events:none}
+.track-badge{display:inline-flex;align-items:center;gap:8px;background:var(--a-soft);border:1px solid rgba(245,158,11,.2);color:var(--amber);font-size:12px;font-weight:600;letter-spacing:.04em;padding:6px 16px;border-radius:100px;margin-bottom:28px;text-transform:uppercase}
+.track-badge::before{content:'';width:6px;height:6px;background:var(--purple);border-radius:50%}
+.hero h1{font-size:clamp(32px,4.5vw,48px);font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:16px}
+.hero-sub{font-size:17px;color:var(--t2);max-width:600px;line-height:1.65;margin-bottom:32px}
+.hero-metric{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--t2);padding:10px 16px;background:var(--bg-card);border:1px solid var(--bdr);border-radius:10px}
+.hero-metric svg{color:var(--amber)}
+
+.det{padding:0 32px 80px;max-width:var(--mw);margin:0 auto}
+.step{display:flex;flex-direction:column;gap:24px;padding:40px 0;border-bottom:1px solid var(--bdr)}
+.step:last-child{border-bottom:none}
+.step-text{max-width:680px}
+.sn{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:8px}
+.step h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.step p{font-size:14px;color:var(--t2);line-height:1.6}
+.step ul{list-style:none;margin-top:12px}
+.step ul li{font-size:13px;color:var(--t2);padding:6px 0 6px 20px;position:relative;line-height:1.5}
+.step ul li::before{content:'';position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--t3)}
+.sl{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-size:12px;font-weight:600;color:var(--purple)}
+
+.arc{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--rs);overflow:hidden;width:100%}
+.arc-ph{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--t3);font-size:13px;background:linear-gradient(135deg,var(--bg-card),rgba(124,58,237,.03))}
+.arc-ph span{font-weight:600;color:var(--t2)}
+
+.ai-bonus{margin-top:16px;background:var(--bg-s);border:1px solid var(--bdr);border-radius:var(--rs);overflow:hidden;transition:border-color .2s}
+.ai-bonus:hover{border-color:var(--bdr-h)}
+.ai-bonus summary{padding:14px 20px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--t2);list-style:none}
+.ai-bonus summary::-webkit-details-marker{display:none}
+.ai-bonus summary::before{content:'✨';font-size:14px}
+.ai-bonus summary .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:6px;background:var(--p-soft);color:var(--purple);margin-left:auto}
+.ai-bonus summary .chevron{transition:transform .2s;color:var(--t3);flex-shrink:0}
+.ai-bonus[open] summary .chevron{transform:rotate(90deg)}
+.ai-bonus-body{padding:0 20px 20px;font-size:13px;color:var(--t2);line-height:1.6}
+.ai-bonus-body p{margin-bottom:12px}
+
+.sec{max-width:var(--mw);margin:0 auto;padding:0 32px 80px}
+.sec-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:12px}
+.sec-h{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.sec-sub{font-size:15px;color:var(--t2);max-width:600px;margin-bottom:40px}
+
+.top-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.top-c{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--rs);padding:18px 20px;display:flex;align-items:center;gap:14px;transition:border-color .15s,background .15s;cursor:pointer;text-decoration:none;color:inherit}
+.top-c:hover{background:var(--bg-card-h);border-color:var(--bdr-h);text-decoration:none}
+.top-i{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.top-c .top-i{background:var(--a-soft);color:var(--amber)}
+.top-c h4{font-size:13px;font-weight:700;line-height:1.3;margin-bottom:1px}
+.top-c p{font-size:11px;color:var(--t3);line-height:1.4}
+
+/* Next tracks */
+.next{max-width:var(--mw);margin:0 auto;padding:0 32px 80px}
+.next-h{font-size:14px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px}
+.next-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.next-grid{grid-template-columns:1fr}}
+.next-card{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:24px;text-decoration:none;color:inherit;transition:border-color .15s,background .15s,transform .15s;display:block}
+.next-card:hover{background:var(--bg-card-h);border-color:var(--bdr-h);transform:translateY(-2px);text-decoration:none}
+.next-card .tl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:4px}
+.next-card h3{font-size:16px;font-weight:800;margin-bottom:4px}
+.next-card p{font-size:13px;color:var(--t2)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:background .15s;text-decoration:none}
+.btn:hover{background:#6d28d9;text-decoration:none}
+
+.fcta{max-width:var(--mw);margin:0 auto;padding:0 32px 80px}
+.fcta-in{background:var(--bg-card);border:1px solid var(--bdr);border-radius:var(--r);padding:40px;text-align:center;position:relative;overflow:hidden}
+.fcta-in::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(124,58,237,.06),transparent 70%);pointer-events:none}
+.fcta-in h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.fcta-in p{font-size:14px;color:var(--t2);margin-bottom:24px}
+
+@keyframes fi{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero,.step,.top-c{animation:fi .5s ease-out both}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="logo">Pylon</span>
+  <span class="sep">/</span>
+  <span class="pg"><a href="pylonboarding-quiz.html">Pylonboarding</a></span>
+  <span class="sep">/</span>
+  <span class="pg">Scale</span>
+  <button class="theme-toggle" aria-label="Toggle light/dark mode" onclick="toggleTheme()">
+    <svg class="moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 11.5A7 7 0 016.5 2.5 7 7 0 1015.5 11.5z"/></svg>
+    <svg class="sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="4"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.3 3.3l1.4 1.4M13.3 13.3l1.4 1.4M3.3 14.7l1.4-1.4M13.3 4.7l1.4-1.4"/></svg>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="track-badge">Track 03 - Scale</div>
+  <h1>The Automated Engine</h1>
+  <p class="hero-sub">Automate triage, enforce compliance, and eliminate manual work. By the end of this track you'll have teams organized, triggers routing issues automatically, and dashboards replacing gut feel.</p>
+  <div class="hero-metric">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 7l4 4L13 3"/></svg>
+    Success: &lt;5% issues need manual routing, 95%+ SLA compliance, dashboards over gut feel
+  </div>
+</section>
+
+<section class="det">
+  <div class="step">
+    <div class="step-text">
+      <div class="sn">Step 1</div>
+      <h3>Organize your Teams</h3>
+      <p>Before automating routing, Pylon needs to know your team structure. Group people by function, segment, or product area.</p>
+      <ul>
+        <li>Customer Success, Engineering, Billing</li>
+        <li>Enterprise Support vs SMB Support</li>
+        <li>One person can belong to multiple teams</li>
+      </ul>
+      <a class="sl" href="https://docs.usepylon.com/pylon-docs/platform/teams">Read the docs →</a>
+    </div>
+    <div class="arc">
+      <div style="position: relative; padding-bottom: calc(47.7167% + 41px); height: 0px; width: 100%;"><iframe src="https://demo.arcade.software/qqqMYdc6ASQEAa6I5n7n?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Set Up Teams" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;"></iframe></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-text">
+      <div class="sn">Step 2</div>
+      <h3>Build routing Triggers</h3>
+      <p>This is where manual triage dies. Triggers auto-route issues to the right team based on AI categorization, keywords, or account tier.</p>
+      <ul>
+        <li>Question Type = Bug → assign to Engineering</li>
+        <li>Account Tier = Enterprise → assign to Enterprise CS</li>
+        <li>No assignment after 5 min → round-robin to on-call</li>
+      </ul>
+      <a class="sl" href="https://docs.usepylon.com/pylon-docs/platform/triggers">Read the docs →</a>
+    </div>
+    <div class="arc">
+      <div class="arc-ph"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="32" height="32" rx="6"/><path d="M16 13l10 7-10 7V13z" fill="currentColor" stroke="none" opacity=".3"/></svg><span>Arcade: Routing Triggers</span>Paste iframe from arcade.software</div>
+    </div>
+    <details class="ai-bonus">
+      <summary>
+        With AI Agents, you can auto-resolve common questions before they ever hit a human
+        <span class="badge">Add-on</span>
+        <svg class="chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l5 4-5 4"/></svg>
+      </summary>
+      <div class="ai-bonus-body">
+        <p>AI Agents go beyond routing - they can draft and send responses to FAQs, pull answers from your Knowledge Base, and only escalate to a human when confidence is low. Combine with Triggers for a fully autonomous first line of support.</p>
+        <a class="sl" href="https://docs.usepylon.com/pylon-docs/ai-agents/overview">Learn more about AI Agents →</a>
+        <div class="arc" style="margin-top:16px">
+          <div style="position: relative; padding-bottom: calc(47.7167% + 41px); height: 0px; width: 100%;"><iframe src="https://demo.arcade.software/87XjCVp3pKMlo3gubGFJ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI-Powered Triage" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;"></iframe></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="step">
+    <div class="step-text">
+      <div class="sn">Step 3</div>
+      <h3>Set up Analytics dashboards</h3>
+      <p>You can't improve what you can't measure. Build dashboards that give team leads real-time visibility into operational health.</p>
+      <ul>
+        <li>SLA compliance rate and trends</li>
+        <li>Volume by category, team, and channel</li>
+        <li>Response time and resolution time distributions</li>
+      </ul>
+      <a class="sl" href="https://docs.usepylon.com/pylon-docs/reporting-and-analytics/analytics">Read the docs →</a>
+    </div>
+    <div class="arc">
+      <div class="arc-ph"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="32" height="32" rx="6"/><path d="M16 13l10 7-10 7V13z" fill="currentColor" stroke="none" opacity=".3"/></svg><span>Arcade: Analytics Dashboard</span>Paste iframe from arcade.software</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-label">Reference</div>
+  <h2 class="sec-h">Related setup topics</h2>
+  <p class="sec-sub">Docs for everything in this track.</p>
+  <div class="top-grid">
+    <a class="top-c" href="https://docs.usepylon.com/pylon-docs/platform/teams"><div class="top-i"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="5" r="2.5"/><circle cx="8" cy="12" r="2.5"/></svg></div><div><h4>Teams</h4><p>Organize users into groups</p></div></a>
+    <a class="top-c" href="https://docs.usepylon.com/pylon-docs/platform/triggers"><div class="top-i"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 1L3 9h5l-1 6 6-8H8z"/></svg></div><div><h4>Triggers</h4><p>Automate actions on events</p></div></a>
+    <a class="top-c" href="https://docs.usepylon.com/pylon-docs/reporting-and-analytics/analytics"><div class="top-i"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 14h12M4 10v4M7 7v7M10 4v10M13 1v13"/></svg></div><div><h4>Analytics</h4><p>Dashboards &amp; reporting</p></div></a>
+    <a class="top-c" href="https://docs.usepylon.com/pylon-docs/platform/ask-ai"><div class="top-i"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6"/><path d="M6 6.5c0-1.1.9-2 2-2s2 .9 2 2c0 .7-.4 1.3-1 1.7V9"/><circle cx="8" cy="11" r=".5" fill="currentColor" stroke="none"/></svg></div><div><h4>Ask AI</h4><p>Search KB from any issue</p></div></a>
+  </div>
+</section>
+
+<section class="next">
+  <div class="next-h">Continue your journey</div>
+  <div class="next-grid">
+    <a class="next-card" href="pylonboarding-foundation.html">
+      <div class="tl">Track 01</div>
+      <h3>Foundation</h3>
+      <p>Centralize, filter, and clear the noise</p>
+    </a>
+    <a class="next-card" href="pylonboarding-growth.html">
+      <div class="tl">Track 02</div>
+      <h3>Growth</h3>
+      <p>Set response targets, measure CSAT, and build feedback loops</p>
+    </a>
+  </div>
+</section>
+
+<section class="fcta">
+  <div class="fcta-in">
+    <h3>Not the right track?</h3>
+    <p>Retake the quiz for a different recommendation.</p>
+    <a class="btn" href="pylonboarding-quiz.html">Retake the quiz →</a>
+  </div>
+</section>
+
+<script>
+function toggleTheme(){
+  document.documentElement.classList.toggle('light');
+  var isLight = document.documentElement.classList.contains('light');
+  try{localStorage.setItem('pylon-theme', isLight ? 'light' : 'dark')}catch(e){}
+}
+try{if(localStorage.getItem('pylon-theme') === 'light'){document.documentElement.classList.add('light')}}catch(e){}
+</script>
+
+</body>
+</html>
